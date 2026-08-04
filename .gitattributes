@@ -1,0 +1,12 @@
+# Normalize line endings so the repo stays clean across Windows/macOS/Linux
+* text=auto eol=lf
+
+# Treat these as binary — never try to diff or convert them
+*.jpg  binary
+*.jpeg binary
+*.png  binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.woff  binary
+*.woff2 binary

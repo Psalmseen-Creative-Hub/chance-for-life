@@ -1,0 +1,27 @@
+# ---------------------------------------------------------------
+# Source material — kept locally, deliberately NOT in Git.
+# These are the original full-size photos and design references
+# (~340 MB). The web-optimized copies the site actually uses are
+# committed in site/images/, so the site runs fine without these.
+# ---------------------------------------------------------------
+Assets/
+Moodboards/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.swp
+*~
+.vscode/
+.idea/
+
+# Tooling, if any is added later
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.env
+.env.*
+!.env.example
