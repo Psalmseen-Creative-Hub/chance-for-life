@@ -102,22 +102,65 @@
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* ---------- Forms (front-end demo handling) ----------
-     Wire the action to a form service (Formspree / Web3Forms) at launch.
-     Until then we validate and show a friendly confirmation. */
-  document.querySelectorAll("form[data-demo]").forEach((form) => {
+/* ---------- Forms → Web3Forms ----------------------------------------
+     Submissions are emailed to whichever address the access key below is
+     registered to (info@chanceforlifeinc.com).
+
+     TO GO LIVE: create a key at https://web3forms.com using
+     info@chanceforlifeinc.com, then paste it in place of the placeholder.
+     Nothing else needs changing.
+
+     The key is not a secret — it only identifies where submissions go, and
+     is visible in page source by design. The hidden "botcheck" field in
+     each form is the honeypot that filters out bots.
+  --------------------------------------------------------------------- */
+  const WEB3FORMS_ACCESS_KEY = "PASTE_YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+  const FALLBACK = "Please call us at 202-487-9587 or email info@chanceforlifeinc.com and we'll help right away.";
+
+  document.querySelectorAll("form[data-web3form]").forEach((form) => {
     const status = form.querySelector(".form-status");
-    form.addEventListener("submit", (e) => {
+    const button = form.querySelector('button[type="submit"]');
+    const buttonMarkup = button ? button.innerHTML : "";
+
+    const say = (kind, message) => {
+      if (!status) return;
+      status.className = "form-status " + kind + " show";
+      status.textContent = message;
+    };
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!form.checkValidity()) { form.reportValidity(); return; }
-      if (status) {
-        status.className = "form-status ok show";
+
+      // Guard: never let a visitor think a message sent when no key is set.
+      if (WEB3FORMS_ACCESS_KEY.indexOf("PASTE_") === 0) {
+        say("err", "This form isn't connected yet. " + FALLBACK);
+        return;
+      }
+
+      if (button) { button.disabled = true; button.textContent = "Sending…"; }
+      say("ok", "Sending…");
+
+      const data = new FormData(form);
+      data.append("access_key", WEB3FORMS_ACCESS_KEY);
+      const email = form.querySelector('[name="email"]');
+      if (email && email.value) data.append("replyto", email.value);
+
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", { method: "POST", body: data });
+        const out = await res.json().catch(() => ({}));
+        if (!res.ok || !out.success) throw new Error(out.message || "Submission failed");
+
         const name = (form.querySelector('[name="name"]') || {}).value || "";
         const first = name.trim().split(" ")[0];
-        status.textContent = `Thank you${first ? ", " + first : ""} — your message is ready to send. Once the site is connected to email delivery, our team will follow up personally. (Demo mode: no message was actually sent.)`;
+        say("ok", "Thank you" + (first ? ", " + first : "") + " — your message has been sent. Our team will follow up with you personally.");
+        form.reset();
+      } catch (err) {
+        say("err", "Sorry — your message didn't send. " + FALLBACK);
+      } finally {
+        if (button) { button.disabled = false; button.innerHTML = buttonMarkup; }
+        if (status) status.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "center" });
       }
-      form.reset();
-      if (status) status.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "center" });
     });
   });
 })();

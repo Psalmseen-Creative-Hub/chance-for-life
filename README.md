@@ -38,16 +38,29 @@ The site is fully static, so it works anywhere: Netlify, Vercel, Cloudflare Page
 - **Publish directory:** `site`
 - **Build command:** none
 
-## ⚠️ Before going live
+## ⚠️ Before going live — paste the Web3Forms key
 
-**The forms do not send yet.** Both the contact form and the CMT registration form validate input and show a confirmation, but nothing is delivered — they're in demo mode, marked with a `data-demo` attribute in the HTML.
+Both forms (contact + CMT registration) are wired to **Web3Forms** and send to
+whichever address the access key is registered to. They are **not live yet**:
+the key is still a placeholder.
 
-A static site can't send email on its own. Pick a handler, point it at **info@chanceforlifeinc.com**, then remove `data-demo` so the browser submits normally:
+**To activate:**
 
-- **[Web3Forms](https://web3forms.com)** or **[Formspree](https://formspree.io)** — works on any host, no backend
-- **Netlify Forms** — add a `netlify` attribute to the `<form>` tag, if hosting there
+1. Make sure `info@chanceforlifeinc.com` actually receives mail (send it a test).
+2. Go to <https://web3forms.com>, enter `info@chanceforlifeinc.com` — they email you an access key.
+3. In `site/js/main.js`, replace the placeholder on the `WEB3FORMS_ACCESS_KEY` line.
+4. Push. Submit a real test through the live site and confirm it arrives.
 
-Keep the HIPAA notice on the contact form. It's for intake interest only, never protected health information.
+Until the key is set, the forms show an error pointing visitors to the phone
+number and email — they never claim a message sent when it didn't.
+
+The access key is not a secret; it only identifies the destination and is
+visible in page source by design. Each form carries a hidden `botcheck`
+honeypot to filter bots.
+
+**Keep the forms intake-only.** Name, email, phone, reason for contact —
+never protected health information. The privacy note on the contact page
+tells visitors this, and the practice should honour it too.
 
 ## Notes
 
