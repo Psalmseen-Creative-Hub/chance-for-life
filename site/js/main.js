@@ -114,7 +114,7 @@
      is visible in page source by design. The hidden "botcheck" field in
      each form is the honeypot that filters out bots.
   --------------------------------------------------------------------- */
-  const WEB3FORMS_ACCESS_KEY = "PASTE_YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+  const WEB3FORMS_ACCESS_KEY = "01a58f2c-8843-4d90-bf9f-b8457209c37a";
   const FALLBACK = "Please call us at 202-487-9587 or email info@chanceforlifeinc.com and we'll help right away.";
 
   document.querySelectorAll("form[data-web3form]").forEach((form) => {
